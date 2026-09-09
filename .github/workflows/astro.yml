@@ -2,13 +2,12 @@
 #
 # To get started with Astro see: https://docs.astro.build/en/getting-started/
 #
-name: Deploy Astro site to Pages
+name: Deploy Astro site to Neocities
 
 on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-    
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -55,7 +54,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "26"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
           cache-dependency-path: ${{ env.BUILD_PATH }}/${{ steps.detect-package-manager.outputs.lockfile }}
       - name: Install dependencies
@@ -73,18 +72,19 @@ jobs:
           path: ${{ env.BUILD_PATH }}/dist
 
   deploy:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
-    # The checkout step copies your repo into the action runner. Important!
-    - uses: actions/checkout@v4
-    # When the dist_dir is ready, deploy it to neocities
-    # Here we deploy the folder named `public`
-    - name: Deploy to neocities
-      uses: bcomnes/deploy-to-neocities@v3
-      with:
-        api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
-        cleanup: false
-        neocities_supporter: false # set this to true if you have a supporter account and want to bypass unsuported files filter.
-        preview_before_deploy: true # print a deployment plan prior to waiting for files to upload.
-        dist_dir: public
+      # The checkout step copies your repo into the action runner. Important!
+      - uses: actions/checkout@v4
+      # When the dist_dir is ready, deploy it to neocities
+      # Here we deploy the folder named `public`
+      - name: Deploy to neocities
+        uses: bcomnes/deploy-to-neocities@v3
+        with:
+          api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
+          cleanup: false
+          neocities_supporter: false # set this to true if you have a supporter account and want to bypass unsuported files filter.
+          preview_before_deploy: true # print a deployment plan prior to waiting for files to upload.
+          dist_dir: public
