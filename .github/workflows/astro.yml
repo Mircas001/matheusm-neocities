@@ -26,7 +26,7 @@ env:
   # BUILD_PATH: subfolder
 
 jobs:
-  build:
+  deploy:
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -71,13 +71,6 @@ jobs:
         with:
           path: ${{ env.BUILD_PATH }}/dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      # The checkout step copies your repo into the action runner. Important!
-      - uses: actions/checkout@v4
       # When the dist_dir is ready, deploy it to neocities
       # Here we deploy the folder named `public`
       - name: Deploy to neocities
